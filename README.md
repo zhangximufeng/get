@@ -10,6 +10,17 @@ https://www.mtdhb.com 红包核心领取逻辑，需配合 [mtdhb/api](https://g
 
 Node.js 9.x
 
+## 代理
+
+修改 [src/service/proxy-server.js](src/service/proxy-server.js) 代理服务器配置
+
+如果只有一个代理，也可以只配置服务器环境变量
+
+```bash
+export PROXY_HOST=ip
+export PROXY_PORT=port
+```
+
 ## 开发
 
 ```bash
@@ -18,17 +29,6 @@ npm run dev
 ```
 
 ## 生产
-
-* 配置代理服务器
-
-请修改 [src/service/proxy-server.js](src/service/proxy-server.js)
-
-如果只有一个代理，也可以配置服务器环境变量
-
-```bash
-export PROXY_HOST=ip
-export PROXY_PORT=port
-```
 
 * 首次部署
 
