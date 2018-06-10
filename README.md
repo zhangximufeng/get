@@ -10,16 +10,16 @@ https://www.mtdhb.com 红包核心领取逻辑，需配合 [mtdhb/api](https://g
 
 Node.js 9.x
 
-### 开发
+## 开发
 
 ```bash
 npm i
 npm run dev
 ```
 
-### 生产
+## 生产
 
-#### 配置代理服务器
+* 配置代理服务器
 
 请修改 [src/service/proxy-server.js](src/service/proxy-server.js)
 
@@ -30,7 +30,7 @@ export PROXY_HOST=ip
 export PROXY_PORT=port
 ```
 
-#### 首次部署
+* 首次部署
 
 ```bash
 npm i pm2 -g
@@ -38,7 +38,7 @@ npm i
 npm start
 ```
 
-#### 代码更新
+* 代码更新
 
 ```bash
 npm run reload
