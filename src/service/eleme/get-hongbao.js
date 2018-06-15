@@ -28,6 +28,7 @@ module.exports = async (req, res) => {
   const request = new Request({sn: query.sn});
   let index = 0;
   let number = -1;
+  let count = 0
 
   try {
     query.lucky_number = (await request.lucky(query)).lucky_number;
@@ -42,6 +43,11 @@ module.exports = async (req, res) => {
   const lucky = await (async function lottery() {
     if (mobile === NO_MOBILE && number === 1) {
       return response(99, '已领取到最佳前一个红包。下一个是最大红包，请手动打开红包链接领取');
+    }
+
+    if (++count >= 200) {
+      // 防止意外无限随机 堆积递归
+      return response(13, '请求饿了么服务器失败，请重试')
     }
 
     const cookie = cookies[index++];

@@ -3,7 +3,7 @@
   "name": "get",
   "scripts": {
     "dev": "nodemon src",
-    "start": "pm2 start src --name get --instances 1",
+    "start": "pm2 start src --name get --instances 4",
     "reload": "pm2 reload get",
     "precommit": "pretty-quick --staged"
   },
