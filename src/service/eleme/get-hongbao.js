@@ -105,6 +105,9 @@ module.exports = async (req, res) => {
             }
             cookie.status = CookieStatus.LIMIT;
             break;
+          case 10:
+            index--
+            return lottery()
         }
 
         // 计算剩余第几个为最佳红包
