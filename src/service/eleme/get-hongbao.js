@@ -85,7 +85,7 @@ module.exports = async (req, res) => {
             if (phone === mobile) {
               return response(
                 11,
-                '你的手机号之前领过小红包，无法领最大了。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
+                '你的手机号之前领过小红包，无法领最大。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
               );
             }
             break;
@@ -106,6 +106,12 @@ module.exports = async (req, res) => {
             cookie.status = CookieStatus.LIMIT;
             break;
           case 10:
+            if (phone === mobile) {
+              return response(
+                12,
+                '你的手机号没有注册过饿了么，无法领最大。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
+              )
+            }
             index--
             return lottery()
         }
