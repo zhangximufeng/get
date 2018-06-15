@@ -12,7 +12,12 @@ const logger = require('../util/logger')('service/proxy');
 //  }
 // }
 // const server = [null];
-const server = [{host: process.env.PROXY_HOST, port: process.env.PROXY_PORT}];
+
+// 为了代码中不暴露IP，在环境变量中配置代理列表 PROXY_LIST=ip1:port1|ip2:port2|...
+const server = (process.env.PROXY_LIST || '').split('|').map(proxy => {
+  const [host, port] = proxy.split(':');
+  return {host, port};
+});
 
 module.exports = () => {
   const proxy = Random.array(server);

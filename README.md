@@ -12,14 +12,7 @@ Node.js 9.x
 
 ## 代理
 
-修改 [src/service/proxy-server.js](src/service/proxy-server.js) 代理服务器配置
-
-如果只有一个代理，也可以只配置服务器环境变量
-
-```bash
-export PROXY_HOST=ip
-export PROXY_PORT=port
-```
+[src/service/proxy-server.js](src/service/proxy-server.js)
 
 ## 开发
 
