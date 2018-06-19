@@ -88,8 +88,8 @@ module.exports = async (req, res) => {
           );
         }
 
-        // 50 次都是 code 10，防止死循环，直接报错
-        if (++count >= 50) {
+        // 100 次都是 code 10，防止死循环，直接报错
+        if (++count >= 100) {
           return response(13, '请求饿了么服务器失败，请重试');
         }
       }
