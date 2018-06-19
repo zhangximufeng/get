@@ -1,6 +1,7 @@
 const querystring = require('querystring');
 const Random = require('../../util/random');
 const cookie2sns = require('./core/cookie2sns');
+const MobileList = require('./core/mobile-list');
 const Request = require('./core/request');
 const logger = require('../../util/logger')('service/eleme');
 const CookieStatus = require('../../constant/cookie-status');
@@ -80,6 +81,9 @@ module.exports = async (req, res) => {
           break;
         }
 
+        // code 10 黑名单
+        MobileList.addBlack(phone);
+
         // 是 code 10 并且是你填的那个号码
         if (phone === mobile) {
           return response(
@@ -103,6 +107,11 @@ module.exports = async (req, res) => {
         // 库里面 cookie 无效，虽然这种可能性比较小
         cookie.status = CookieStatus.INVALID;
       } else {
+        // 可用的，并且不是用户填的，存起来用于以后随机
+        if (phone !== mobile && data.ret_code !== 1) {
+          MobileList.addWhite(phone);
+        }
+
         switch (data.ret_code) {
           case 1:
             // 红包被抢完了
