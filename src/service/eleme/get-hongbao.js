@@ -32,7 +32,6 @@ module.exports = async (req, res) => {
   const request = new Request({sn: query.sn});
   let index = 0;
   let number = -1;
-  let count = 0;
 
   try {
     query.lucky_number = (await request.lucky(query)).lucky_number;
@@ -49,11 +48,6 @@ module.exports = async (req, res) => {
       return response(99, '已领取到最佳前一个红包。下一个是最大红包，请手动打开红包链接领取');
     }
 
-    if (++count >= 200) {
-      // 防止意外无限随机 堆积递归
-      return response(13, '请求饿了么服务器失败，请重试');
-    }
-
     const cookie = cookies[index++];
     if (!cookie) {
       // 传过来的 cookie 不够用
@@ -66,14 +60,39 @@ module.exports = async (req, res) => {
     const sns = cookie2sns(cookie.value) || {};
 
     try {
-      const phone = number === 1 ? mobile : Random.phone(mobile);
-      const data = await request.hongbao({
-        // 如果这个是最佳红包，换成指定的手机号领取
-        phone,
-        openid: sns.openid,
-        sign: sns.eleme_key,
-        platform: query.platform
-      });
+      let phone;
+      let data;
+      let count = 0;
+
+      // code 10 逻辑，由之前的递归改为循环
+      while (true) {
+        phone = number === 1 ? mobile : Random.phone(mobile);
+        data = await request.hongbao({
+          // 如果这个是最佳红包，换成指定的手机号领取
+          phone,
+          openid: sns.openid,
+          sign: sns.eleme_key,
+          platform: query.platform
+        });
+
+        // 不是 code 10 跳出
+        if (!data || data.ret_code !== 10) {
+          break;
+        }
+
+        // 是 code 10 并且是你填的那个号码
+        if (phone === mobile) {
+          return response(
+            12,
+            '你的手机号没有注册饿了么账号或者需要填写验证码，无法领最大。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
+          );
+        }
+
+        // 50 次都是 code 10，防止死循环，直接报错
+        if (++count >= 50) {
+          return response(13, '请求饿了么服务器失败，请重试');
+        }
+      }
 
       // 失败走下一轮请求
       if (data === null) {
@@ -115,15 +134,6 @@ module.exports = async (req, res) => {
             }
             cookie.status = CookieStatus.LIMIT;
             break;
-          case 10:
-            if (phone === mobile) {
-              return response(
-                12,
-                '你的手机号没有注册饿了么账号或者需要填写验证码，无法领最大。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
-              );
-            }
-            index--;
-            return lottery();
         }
 
         // 计算剩余第几个为最佳红包
