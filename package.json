@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "nodemon src",
     "start": "pm2 start src --name get --instances 1",
-    "reload": "pm2 reload get",
+    "reload": "pm2 reload get --update-env",
     "precommit": "pretty-quick --staged"
   },
   "dependencies": {
