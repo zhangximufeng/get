@@ -20,7 +20,11 @@ module.exports = async (req, res) => {
     return response(2, '请填写 11 位手机号码');
   }
 
-  if (url.indexOf('waimai.meituan.com') === -1) {
+  if (
+    String(url)
+      .trim()
+      .indexOf('https://activity.waimai.meituan.com/') !== 0
+  ) {
     return response(3, '美团红包链接不正确');
   }
 

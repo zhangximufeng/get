@@ -20,7 +20,11 @@ module.exports = async (req, res) => {
     return response(2, '请填写 11 位手机号码');
   }
 
-  if (url.indexOf('https://h5.ele.me/hongbao/') === -1) {
+  if (
+    String(url)
+      .trim()
+      .indexOf('https://h5.ele.me/hongbao/') !== 0
+  ) {
     return response(3, '饿了么红包链接不正确');
   }
 
@@ -28,7 +32,7 @@ module.exports = async (req, res) => {
   const request = new Request({sn: query.sn});
   let index = 0;
   let number = -1;
-  let count = 0
+  let count = 0;
 
   try {
     query.lucky_number = (await request.lucky(query)).lucky_number;
@@ -47,7 +51,7 @@ module.exports = async (req, res) => {
 
     if (++count >= 200) {
       // 防止意外无限随机 堆积递归
-      return response(13, '请求饿了么服务器失败，请重试')
+      return response(13, '请求饿了么服务器失败，请重试');
     }
 
     const cookie = cookies[index++];
@@ -116,10 +120,10 @@ module.exports = async (req, res) => {
               return response(
                 12,
                 '你的手机号没有注册饿了么账号或者需要填写验证码，无法领最大。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
-              )
+              );
             }
-            index--
-            return lottery()
+            index--;
+            return lottery();
         }
 
         // 计算剩余第几个为最佳红包
