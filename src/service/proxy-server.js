@@ -11,13 +11,15 @@ const logger = require('../util/logger')('service/proxy');
 //    password
 //  }
 // }
-// const server = [null];
 
 // 为了代码中不暴露IP，在环境变量中配置代理列表 PROXY_LIST=ip1:port1|ip2:port2|...
-const server = (process.env.PROXY_LIST || '').split('|').map(proxy => {
-  const [host, port] = proxy.split(':');
-  return {host, port};
-});
+const PROXY_LIST = process.env.PROXY_LIST || '';
+const server = PROXY_LIST
+  ? PROXY_LIST.split('|').map(proxy => {
+      const [host, port] = proxy.split(':');
+      return {host, port};
+    })
+  : [null];
 
 module.exports = () => {
   const proxy = Random.array(server);
