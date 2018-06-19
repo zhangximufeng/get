@@ -23,7 +23,7 @@ npm run dev
 
 ## 生产
 
-* 首次部署
+- 首次部署
 
 ```bash
 npm i pm2 -g
@@ -31,8 +31,18 @@ npm i
 npm start
 ```
 
-* 代码更新
+- 代码更新
+
+以下内容存为 `*.sh`，以后直接运行它即可更新
 
 ```bash
+#!/bin/bash
+
+cp src/service/eleme/core/mobile-list.json src/service/eleme/core/mobile-list.json.bak
+git fetch origin master
+git reset --hard FETCH_HEAD
+cp src/service/eleme/core/mobile-list.json.bak src/service/eleme/core/mobile-list.json
+npm i
 npm run reload
+pm2 ls
 ```
