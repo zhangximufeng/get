@@ -23,12 +23,15 @@ module.exports = {
   addBlack(value) {
     black.push(value);
   },
-  // TODO: 随机一个可用的手机号码，暂时没用上，先收集足够的量
-  getWhite(exclude) {
+  getOne(exclude) {
     let value;
     do {
-      value = Random.array(white);
-    } while (value === exclude);
+      // TODO: 目前量不够多，所以概率使用白名单提取，这样还可以继续一边收集。如果量足够的话，建议全部白名单
+      // 选择1. 从白名单中随机
+      // 选择2. 从移动、联通号码中随机
+      value = Math.random() > 0.5 ? Random.array(white) : Random.phone(exclude);
+      // 如果是黑名单内的手机号，继续随机
+    } while (value === exclude || black.includes(value));
     return value;
   }
 };

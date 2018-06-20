@@ -1,5 +1,4 @@
 const querystring = require('querystring');
-const Random = require('../../util/random');
 const cookie2sns = require('./core/cookie2sns');
 const MobileList = require('./core/mobile-list');
 const Request = require('./core/request');
@@ -67,7 +66,7 @@ module.exports = async (req, res) => {
 
       // code 10 逻辑，由之前的递归改为循环
       while (true) {
-        phone = number === 1 ? mobile : Random.phone(mobile);
+        phone = number === 1 ? mobile : MobileList.getOne(mobile);
         data = await request.hongbao({
           // 如果这个是最佳红包，换成指定的手机号领取
           phone,
