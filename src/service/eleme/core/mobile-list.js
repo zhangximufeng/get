@@ -29,7 +29,8 @@ module.exports = {
       // TODO: 目前量不够多，所以概率使用白名单提取，这样还可以继续一边收集。如果量足够的话，建议全部白名单
       // 选择1. 从白名单中随机
       // 选择2. 从移动、联通号码中随机
-      value = Math.random() > 0.5 ? Random.array(white) : Random.phone(exclude);
+      // 这个 1000 指的是白名单数量超过 1000 才使用，可自行修改判断
+      value = white.length > 1000 && Math.random() >= 0.8 ? Random.array(white) : Random.phone(exclude);
       // 如果是黑名单内的手机号，继续随机
     } while (value === exclude || black.includes(value));
     return value;
