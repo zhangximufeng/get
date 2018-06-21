@@ -27,7 +27,7 @@ yarn dev
 
 ## 生产
 
-- 首次部署
+### 首次部署
 
 ```bash
 yarn global add pm2
@@ -35,7 +35,7 @@ yarn
 yarn start
 ```
 
-- 代码更新
+### 代码更新
 
 ```bash
 #!/bin/bash
@@ -50,12 +50,10 @@ yarn
 yarn reload
 ```
 
-将以上内容存为 `*.sh`，并设置执行权限
+将以上内容存为 `*.sh`，并设置脚本执行权限。可放在 webhook 中，当代码 push 到远程时自动更新
 
-可放在 webhook 中，当代码 push 到远程时自动更新
-
-- 查看日志，内存信息等
+### 查看日志，内存信息等
 
 请查看 pm2 文档 https://www.npmjs.com/package/pm2
 
-另外在 `log/` 目录也将按照日期输出日志
+另外在 `log/` 目录也将按照日期输出每天的日志
