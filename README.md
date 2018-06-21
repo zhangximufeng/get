@@ -30,6 +30,8 @@ yarn dev
 ### 首次部署
 
 ```bash
+git clone https://github.com/mtdhb/get.git mtdhb-get
+cd mtdhb-get
 yarn global add pm2
 yarn
 yarn start
@@ -40,6 +42,7 @@ yarn start
 ```bash
 #!/bin/bash
 
+cd mtdhb-get
 export MOBILE_LIST=src/service/eleme/core/mobile-list.json
 export MOBILE_LIST_BAK=$MOBILE_LIST.bak
 cp $MOBILE_LIST $MOBILE_LIST_BAK
