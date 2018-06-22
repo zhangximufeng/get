@@ -5,6 +5,10 @@ const Random = require('../../util/random');
 const logger = require('../../util/logger')('service/eleme');
 const checkCookieResponse = require('../check-cookie-response');
 
+const query = querystring.parse(
+  'https://h5.ele.me/hongbao/#hardware_id=&is_lucky_group=True&lucky_number=8&track_id=&platform=4&sn=29e47b57971c1c9d&theme_id=1969&device_id='
+);
+
 module.exports = async (req, res) => {
   const {cookie} = req.body;
   const response = checkCookieResponse(req, res);
@@ -18,9 +22,6 @@ module.exports = async (req, res) => {
     return response(1, 'cookie 不正确，请按照教程一步一步获取');
   }
 
-  const query = querystring.parse(
-    'https://h5.ele.me/hongbao/#hardware_id=&is_lucky_group=True&lucky_number=8&track_id=&platform=4&sn=29e47b57971c1c9d&theme_id=1969&device_id='
-  );
   const request = new Request({sn: query.sn});
   let count = 0;
 

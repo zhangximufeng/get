@@ -4,15 +4,14 @@ const uniq = require('lodash/uniq');
 const logger = require('../../../util/logger')('service/eleme');
 const Random = require('../../../util/random');
 let {white = [], black = []} = require('./mobile-list.json');
-// 为了收集时的效率，没有判断重复。在下次读取的时候去重一下
-white = uniq(white);
-black = uniq(black);
 
 // 定时存一下
 setInterval(() => {
+  white = uniq(white);
+  black = uniq(black);
   logger.info(`当前 white ${white.length} 条，black ${black.length} 条`);
   fs.writeFile(path.join(__dirname, 'mobile-list.json'), JSON.stringify({white, black}), () => {});
-}, 1000 * 10);
+}, 1000 * 60);
 
 module.exports = {
   // 加入白名单，用于以后快速随机

@@ -54,9 +54,6 @@ module.exports = async (req, res) => {
       return response(4, '请求饿了么服务器失败，请重试。如果重试仍然不行，请换一个饿了么链接再来');
     }
 
-    // 如果返回 null，表示 cookie 无效，
-    // 虽然这种可能性比较小（因为入库要做 check-cookie 的）
-    // 为了让后面逻辑继续走下去 || {}
     const sns = cookie2sns(cookie.value) || {};
 
     try {
@@ -66,9 +63,9 @@ module.exports = async (req, res) => {
 
       // code 10 逻辑，由之前的递归改为循环
       while (true) {
+        // 如果这个是最佳红包，换成指定的手机号领取
         phone = number === 1 ? mobile : MobileList.getOne(mobile);
         data = await request.hongbao({
-          // 如果这个是最佳红包，换成指定的手机号领取
           phone,
           openid: sns.openid,
           sign: sns.eleme_key,
