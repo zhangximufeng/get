@@ -20,14 +20,8 @@ module.exports = async (req, res) => {
     return response(2, '请填写 11 位手机号码');
   }
 
-  url = String(url);
-
-  if (url.trim().indexOf('https://h5.ele.me/hongbao/') !== 0) {
-    return response(3, '饿了么红包链接不正确');
-  }
-
   // 某些地方复制出的链接带 &amp; 而不是 &
-  url = url.replace(/&amp;/g, '&');
+  url = String(url).replace(/&amp;/g, '&');
   const query = querystring.parse(url);
   const request = new Request({sn: query.sn});
   let index = 0;
