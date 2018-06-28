@@ -176,7 +176,8 @@ module.exports = async (req, res) => {
         // 还有 cookie 继续
         if (index < cookies.length - 1) {
           return lottery();
-        } else if (number === 1) {
+        }
+        if (number === 1) {
           // 400 重试过了，仍然 400，而且马上要最大红包了
           return response(
             10,
