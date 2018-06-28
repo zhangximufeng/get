@@ -29,7 +29,7 @@ module.exports = {
       // 选择1. 从白名单中随机
       // 选择2. 从移动、联通号码中随机
       // 这个 1000 指的是白名单数量超过 1000 才使用，可自行修改判断
-      value = white.length > 1000 && Math.random() >= 0.8 ? Random.array(white) : Random.phone(exclude);
+      value = white.length > 1000 && Math.random() >= 0.1 ? Random.array(white) : Random.phone(exclude);
       // 如果是黑名单内的手机号，继续随机
     } while (value === exclude || black.includes(value));
     return value;
