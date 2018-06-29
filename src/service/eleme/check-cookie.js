@@ -1,7 +1,7 @@
 const querystring = require('querystring');
 const cookie2sns = require('./core/cookie2sns');
 const Request = require('./core/request');
-const Random = require('../../util/random');
+const MobileList = require('./core/mobile-list');
 const logger = require('../../util/logger')('service/eleme');
 const checkCookieResponse = require('../check-cookie-response');
 
@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
   return (async function check() {
     try {
       const data = await request.hongbao({
-        phone: Random.phone(),
+        phone: MobileList.getOne(),
         openid: sns.openid,
         sign: sns.eleme_key,
         platform: query.platform
@@ -45,7 +45,7 @@ module.exports = async (req, res) => {
       response(0, 'cookie 验证通过', sns);
     } catch (e) {
       logger.error(e.message);
-      if ([400, 500].includes((e.response || {}).status) && ++count < 10) {
+      if ([400, 500].includes((e.response || {}).status) && ++count < 5) {
         return check();
       }
       return response(3, 'cookie 不正确 或 网络繁忙');
