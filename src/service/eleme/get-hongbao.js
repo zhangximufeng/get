@@ -140,8 +140,13 @@ module.exports = async (req, res) => {
 
         // 领完了可能不会返回 records，所以 === 0
         if (data.promotion_records.length === 0 || number <= 0) {
+          let type = null;
+          const firstItem = data.promotion_items[0];
+          if (firstItem) {
+            type = firstItem.name == '拼手气红包' ? 0 : 1;
+          }
           const lucky = data.promotion_records[query.lucky_number - 1];
-          logger.info('手气最佳红包已被领取 %j', lucky);
+          logger.info('手气最佳红包已被领取 %j %j', firstItem, lucky);
 
           // 还是取不到，可能是因为领完了，不会返回数组了
           if (!lucky) {
@@ -149,9 +154,11 @@ module.exports = async (req, res) => {
               nickname: '未知',
               price: 0,
               date: '未知',
-              id: query.sn
+              id: query.sn,
+              type: type
             });
           }
+          lucky.type = type;
           return lucky;
         }
 
@@ -195,6 +202,7 @@ module.exports = async (req, res) => {
     nickname: lucky.sns_username || '',
     price: parseFloat(lucky.amount || 0),
     date: new Date(lucky.created_at * 1000).toString(),
-    id: query.sn
+    id: query.sn,
+    type: lucky.type
   });
 };
