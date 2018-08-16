@@ -100,7 +100,7 @@ module.exports = async (req, res) => {
         cookie.status = CookieStatus.INVALID;
       } else {
         // 记录红包类型
-        if (type === null && data.promotion_items.length > 0) {
+        if (type === undefined && data.promotion_items.length > 0) {
           const typeName = data.promotion_items[0].name;
           if (typeName === '拼手气红包') {
             type = 0;
