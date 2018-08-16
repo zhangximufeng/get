@@ -26,6 +26,7 @@ module.exports = async (req, res) => {
   const request = new Request({sn: query.sn});
   let index = 0;
   let number = -1;
+  let type;
 
   try {
     query.lucky_number = (await request.lucky(query)).lucky_number;
@@ -39,13 +40,13 @@ module.exports = async (req, res) => {
 
   const lucky = await (async function lottery() {
     if (mobile === NO_MOBILE && number === 1) {
-      return response(99, '已领取到最佳前一个红包。下一个是最大红包，请手动打开红包链接领取');
+      return response(99, '已领取到最佳前一个红包。下一个是最大红包，请手动打开红包链接领取', {type});
     }
 
     const cookie = cookies[index++];
     if (!cookie) {
       // 传过来的 cookie 不够用
-      return response(4, '请求饿了么服务器失败，请重试。如果重试仍然不行，请换一个饿了么链接再来');
+      return response(4, '请求饿了么服务器失败，请重试。如果重试仍然不行，请换一个饿了么链接再来', {type});
     }
 
     const sns = cookie2sns(cookie.value) || {};
@@ -78,13 +79,14 @@ module.exports = async (req, res) => {
         if (phone === mobile) {
           return response(
             12,
-            '你的手机号没有注册饿了么账号或者需要填写验证码，无法领最大。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
+            '你的手机号没有注册饿了么账号或者需要填写验证码，无法领最大。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取',
+            {type}
           );
         }
 
         // 100 次都是 code 10，防止死循环，直接报错
         if (++count >= 100) {
-          return response(13, '请求饿了么服务器失败，请重试');
+          return response(13, '请求饿了么服务器失败，请重试', {type});
         }
       }
 
@@ -97,6 +99,15 @@ module.exports = async (req, res) => {
         // 库里面 cookie 无效，虽然这种可能性比较小
         cookie.status = CookieStatus.INVALID;
       } else {
+        // 记录红包类型
+        if (type === null && data.promotion_items.length > 0) {
+          const typeName = data.promotion_items[0].name;
+          if (typeName == '拼手气红包') {
+            type = 0;
+          } else if (typeName == '品质联盟专享红包') {
+            type = 1;
+          }
+        }
         // 可用的，并且不是用户填的，存起来用于以后随机
         if (phone !== mobile && data.ret_code !== 1) {
           MobileList.addWhite(phone);
@@ -113,7 +124,8 @@ module.exports = async (req, res) => {
             if (phone === mobile) {
               return response(
                 11,
-                '你的手机号之前领过小红包，无法领最大。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
+                '你的手机号之前领过小红包，无法领最大。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取',
+                {type}
               );
             }
             break;
@@ -128,7 +140,8 @@ module.exports = async (req, res) => {
             if (phone === mobile) {
               return response(
                 9,
-                '你的手机号（或代领最佳的小号）今日领取次数已达上限。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
+                '你的手机号（或代领最佳的小号）今日领取次数已达上限。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取',
+                {type}
               );
             }
             cookie.status = CookieStatus.LIMIT;
@@ -140,11 +153,6 @@ module.exports = async (req, res) => {
 
         // 领完了可能不会返回 records，所以 === 0
         if (data.promotion_records.length === 0 || number <= 0) {
-          let type = null;
-          const firstItem = data.promotion_items[0];
-          if (firstItem) {
-            type = firstItem.name == '拼手气红包' ? 0 : 1;
-          }
           const lucky = data.promotion_records[query.lucky_number - 1];
           logger.info('手气最佳红包已被领取 %j %j', firstItem, lucky);
 
@@ -155,7 +163,7 @@ module.exports = async (req, res) => {
               price: 0,
               date: '未知',
               id: query.sn,
-              type: type
+              type
             });
           }
           lucky.type = type;
@@ -165,7 +173,7 @@ module.exports = async (req, res) => {
         logger.info(`还要领 ${number} 个红包才是手气最佳`);
 
         if (limit - 1 < number - (mobile === NO_MOBILE ? 1 : 0)) {
-          return response(8, `您的剩余可消耗次数不足以领取此红包，还差 ${number} 个是最佳红包`);
+          return response(8, `您的剩余可消耗次数不足以领取此红包，还差 ${number} 个是最佳红包`, {type});
         }
       }
 
@@ -182,14 +190,16 @@ module.exports = async (req, res) => {
           // 400 重试过了，仍然 400，而且马上要最大红包了
           return response(
             10,
-            '饿了么返回错误或者你的手机号今日领取次数已达上限。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
+            '饿了么返回错误或者你的手机号今日领取次数已达上限。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取',
+            {type}
           );
         }
       }
 
       return response(
         7,
-        is400500 ? '饿了么返回 400 错误，请重试。如果重试仍然不行，请换一个饿了么链接再来。' : e.message
+        is400500 ? '饿了么返回 400 错误，请重试。如果重试仍然不行，请换一个饿了么链接再来。' : e.message,
+        {type}
       );
     }
   })();
