@@ -102,9 +102,9 @@ module.exports = async (req, res) => {
         // 记录红包类型
         if (type === null && data.promotion_items.length > 0) {
           const typeName = data.promotion_items[0].name;
-          if (typeName == '拼手气红包') {
+          if (typeName === '拼手气红包') {
             type = 0;
-          } else if (typeName == '品质联盟专享红包') {
+          } else if (typeName === '品质联盟专享红包') {
             type = 1;
           }
         }
@@ -154,7 +154,7 @@ module.exports = async (req, res) => {
         // 领完了可能不会返回 records，所以 === 0
         if (data.promotion_records.length === 0 || number <= 0) {
           const lucky = data.promotion_records[query.lucky_number - 1];
-          logger.info('手气最佳红包已被领取 %j %j', firstItem, lucky);
+          logger.info('手气最佳红包已被领取 %j', lucky);
 
           // 还是取不到，可能是因为领完了，不会返回数组了
           if (!lucky) {
