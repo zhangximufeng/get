@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
 
   // 某些地方复制出的链接带 &amp; 而不是 &
   url = String(url).replace(/&amp;/g, '&');
-  const query = querystring.parse(url);
+  const query = querystring.parse(url.replace('https://h5.ele.me/hongbao/#', ''));
   const request = new Request({sn: query.sn});
   let index = 0;
   let number = -1;
