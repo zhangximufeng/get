@@ -21,8 +21,12 @@ module.exports = async (req, res) => {
   }
 
   // 某些地方复制出的链接带 &amp; 而不是 &
-  url = String(url).replace(/&amp;/g, '&');
-  const query = querystring.parse(url.split('#')[1]);
+  // 饿了么链接是 # 后面做参数，所以截后面操作
+  const query = querystring.parse(
+    String(url)
+      .replace(/&amp;/g, '&')
+      .split('#')[1]
+  );
   const request = new Request({sn: query.sn});
   let index = 0;
   let number = -1;
