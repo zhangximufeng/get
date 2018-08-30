@@ -3,7 +3,6 @@
  */
 
 const app = require('./app');
-const debug = require('debug')('get');
 const http = require('http');
 
 /**
@@ -77,5 +76,5 @@ function onError(error) {
 
 function onListening() {
   const addr = server.address();
-  debug(`Listening on http://127.0.0.1:${addr.port}`);
+  console.log(`Listening on http://127.0.0.1:${addr.port}`);
 }
