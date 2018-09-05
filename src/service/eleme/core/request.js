@@ -35,21 +35,10 @@ module.exports = class Request {
   }
 
   async hongbao({phone, openid, sign, platform}) {
-    const bind = async () => {
-      await this.http.put(`/restapi/v1/weixin/${openid}/phone`, {sign, phone});
-      logger.info('绑定手机号', phone);
-    };
-
     try {
-      await bind();
-    } catch (e) {
-      try {
-        await bind();
-      } catch (e) {
-        logger.error('重试绑定仍然异常', e.message);
-        return null;
-      }
-    }
+      logger.info('绑定手机号', phone);
+      await this.http.put(`/restapi/v1/weixin/${openid}/phone`, {sign, phone});
+    } catch (e) {}
 
     logger.info('使用 %s 领取', phone);
 
