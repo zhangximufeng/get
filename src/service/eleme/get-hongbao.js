@@ -63,9 +63,11 @@ module.exports = async (req, res) => {
       // code 10 逻辑，由之前的递归改为循环
       while (true) {
         // 如果这个是最佳红包，换成指定的手机号领取
-        phone = number === 1 ? mobile : MobileList.getOne(mobile);
+        const check = number === 1;
+        phone = check ? mobile : MobileList.getOne(mobile);
         data = await request.hongbao({
           phone,
+          check,
           openid: sns.openid,
           sign: sns.eleme_key,
           platform: query.platform

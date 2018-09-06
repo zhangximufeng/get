@@ -34,7 +34,23 @@ module.exports = class Request {
     return data;
   }
 
-  async hongbao({phone, openid, sign, platform}) {
+  async hongbao(options) {
+    const {phone, check} = options;
+    let count = 0;
+    // 马上要领最佳了，先验证手机号是否成功绑定
+    while (check) {
+      const {account} = await this._hongbao({...options, sn: '29e47b57971c1c9d'});
+      if (account === phone) {
+        break;
+      }
+      if (++count > 5) {
+        throw new Error('未能成功绑定您的手机号码。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取');
+      }
+    }
+    return await this._hongbao(options);
+  }
+
+  async _hongbao({phone, openid, sign, platform, sn}) {
     try {
       logger.info('绑定手机号', phone);
       await this.http.put(`/restapi/v1/weixin/${openid}/phone`, {sign, phone});
@@ -44,7 +60,7 @@ module.exports = class Request {
 
     const {data = {}} = await this.http.post(`/restapi/marketing/promotion/weixin/${openid}`, {
       device_id: '',
-      group_sn: this.sn,
+      group_sn: sn || this.sn,
       hardware_id: '',
       method: 'phone',
       phone,
