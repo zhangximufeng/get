@@ -4,7 +4,7 @@
 
 **[mtdhb/eleme - 最新饿了么红包接口 Node.js 封装](https://github.com/mtdhb/eleme)**
 
-https://www.mtdhb.com 红包核心领取逻辑，需配合 [mtdhb/api](https://github.com/mtdhb/api) 使用
+红包核心领取逻辑，需配合 [mtdhb/api](https://github.com/mtdhb/api) 使用
 
 基于 [mtdhb/old](https://github.com/mtdhb/old) 改造，代码比较乱，自行研究和部署吧
 
