@@ -10,7 +10,7 @@ const NO_MOBILE = '10000000000';
 module.exports = async (req, res) => {
   let {url, mobile, cookies, limit} = req.body;
   const response = getHongbaoResponse(req, res);
-  return response(1, '暂不支持贡献饿了么，敬请期待');
+  return response(1, '暂不支持领取饿了么，敬请期待');
   // mobile = mobile || NO_MOBILE;
   //
   // if (!url || !mobile) {
