@@ -9,7 +9,7 @@ const meituan = require('../service/meituan/check-cookie');
 router.post('/', async (req, res, next) => {
   try {
     const {application, cookie} = req.body;
-    logger.info('%j', req.body);
+    logger.info(req.body);
     req.body.cookie = cleanCookie(cookie);
     const action = [meituan, eleme][application];
     if (!action) {

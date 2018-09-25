@@ -140,7 +140,7 @@ module.exports = async (req, res) => {
     if (number <= 0) {
       // const best = gsc2.data.wxCoupons.find(w => w.bestLuck) || {}
       const best = gsc2.data.wxCoupons[lucky - 1] || {};
-      logger.info('手气最佳红包已被领取 %j', best);
+      logger.info('手气最佳红包已被领取', best);
       return response(0, '手气最佳红包已被领取', {
         nickname: best.nick_name || '未知',
         price: (best.coupon_price || 0) / 100,

@@ -11,6 +11,7 @@
     "axios": "^0.17.1",
     "axios-https-proxy-fix": "^0.17.1",
     "body-parser": "~1.18.2",
+    "cookie": "^0.3.1",
     "cookie-parser": "~1.4.3",
     "crypto-js": "^3.1.9-1",
     "express": "~4.15.5",

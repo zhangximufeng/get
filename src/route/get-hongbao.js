@@ -13,7 +13,7 @@ router.post('/', async (req, res, next) => {
       req.body.cookies = JSON.parse(cookies);
     }
     // cookies 太多了，日志只打 length
-    logger.info('%j', {
+    logger.info({
       url,
       mobile,
       limit,

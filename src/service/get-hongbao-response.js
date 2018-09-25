@@ -12,5 +12,5 @@ module.exports = (req, res) => (code, message, result) => {
     r.data.result = result;
   }
   res.json(r);
-  logger.info('%j', r);
+  logger.info(r);
 };

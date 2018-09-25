@@ -8,6 +8,11 @@ module.exports = (req, res) => (code, message, data) => {
       nickname: data.nickname || '',
       service: data.service
     };
+    Object.keys(data).forEach(key => {
+      if (typeof data[key] === 'string') {
+        data[key] = data[key].trim();
+      }
+    });
   }
   const r = {
     code,
@@ -15,5 +20,5 @@ module.exports = (req, res) => (code, message, data) => {
     data
   };
   res.json(r);
-  logger.info('%j', r);
+  logger.info(r);
 };

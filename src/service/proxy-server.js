@@ -23,6 +23,6 @@ const server = PROXY_LIST
 
 module.exports = () => {
   const proxy = Random.array(server);
-  logger.log('%j', proxy || '本次不走代理');
+  logger.info(proxy || '本次不走代理');
   return proxy;
 };
