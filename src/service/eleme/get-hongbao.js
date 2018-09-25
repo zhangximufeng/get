@@ -8,7 +8,6 @@ const getHongbaoResponse = require('../get-hongbao-response');
 module.exports = async (req, res) => {
   let {url, cookies, limit} = req.body;
   const response = getHongbaoResponse(req, res);
-  response(1, '暂时未开放领取：由于刚刚开放饿了么贡献，服务器 cookie 还不够，请耐心等待开放');
 
   if (!url) {
     return response(1, '请将信息填写完整');
