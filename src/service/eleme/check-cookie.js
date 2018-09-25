@@ -43,5 +43,8 @@ module.exports = async (req, res) => {
     return response(3, 'cookie 不正确 或 未通过手机短信验证，请先绑定手机号再来');
   }
 
-  response(0, 'cookie 验证通过', sns);
+  response(0, 'cookie 验证通过', {
+    ...sns,
+    phone: data.account
+  });
 };

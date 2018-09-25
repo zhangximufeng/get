@@ -6,6 +6,7 @@ module.exports = (req, res) => (code, message, data) => {
       openid: data.openid || data.openId || '',
       headimgurl: data.headimgurl || data.avatar || data.imgUrl || '',
       nickname: data.nickname || '',
+      phone: data.phone || '',
       service: data.service
     };
     Object.keys(data).forEach(key => {
