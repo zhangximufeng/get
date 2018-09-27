@@ -30,9 +30,9 @@ module.exports = async (req, res) => {
   try {
     const {is_lucky_group, lucky_number} = await request.lucky(query);
     query.lucky_number = lucky_number || query.lucky_number;
-    isLuckyGroup = !!is_lucky_group;
+    isLuckyGroup = is_lucky_group;
   } catch (e) {
-    return response(3, `饿了么红包链接不正确或请求饿了么超时 ${e.message}`);
+    return response(3, `饿了么红包链接不正确或请求饿了么超时：${e.message}`);
   }
 
   if (!isLuckyGroup || !query.sn || !query.lucky_number || isNaN(query.lucky_number)) {

@@ -29,9 +29,16 @@ module.exports = class Request {
     });
   }
 
-  async lucky({theme_id = '0'}) {
-    const {data = {}} = await this.http.get(`/restapi/marketing/themes/${theme_id}/group_sns/${this.sn}`);
-    return data;
+  async lucky({theme_id = '1'}) {
+    for (const item of [theme_id, '1969', '2769', '2897', '2913']) {
+      try {
+        const {data = {}} = await this.http.get(`/restapi/marketing/themes/${item}/group_sns/${this.sn}`);
+        return data;
+      } catch (e) {
+        logger.error(`尝试使用 theme_id ${item} 获取 lucky_number 失败：${e.message}`);
+      }
+    }
+    throw new Error('获取 lucky_number 失败');
   }
 
   async hongbao({openid, sign, sid, sn = this.sn}) {
