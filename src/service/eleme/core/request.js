@@ -30,12 +30,15 @@ module.exports = class Request {
   }
 
   async lucky({theme_id = '1'}) {
-    for (const item of [theme_id, '1969', '2769', '2897', '2913']) {
+    for (const item of [theme_id, '1969', '2769']) {
       try {
-        const {data = {}} = await this.http.get(`/restapi/marketing/themes/${item}/group_sns/${this.sn}`);
-        return data;
+        const {data} = await this.http.get(`/restapi/marketing/themes/${item}/group_sns/${this.sn}`);
+        if (data && !data.message) {
+          return data;
+        }
+        logger.error(`尝试使用 theme_id ${item} 获取 lucky_number 失败：`, data);
       } catch (e) {
-        logger.error(`尝试使用 theme_id ${item} 获取 lucky_number 失败：${e.message}`);
+        logger.error(`尝试使用 theme_id ${item} 获取 lucky_number 失败：`, e.message);
       }
     }
     throw new Error('获取 lucky_number 失败');
