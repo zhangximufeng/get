@@ -40,6 +40,8 @@ yarn start
 ### 代码更新
 
 ```bash
+git fetch origin master
+git reset --hard FETCH_HEAD
 yarn
 yarn reload
 ```
