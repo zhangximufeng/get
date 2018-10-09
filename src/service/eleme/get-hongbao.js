@@ -69,7 +69,7 @@ module.exports = async (req, res) => {
     }
 
     // 库里面 cookie 无效
-    if (['SNS_UID_CHECK_FAILED', 'PHONE_IS_EMPTY'].includes(data.name)) {
+    if (['SNS_UID_CHECK_FAILED', 'PHONE_IS_EMPTY', 'UNAUTHORIZED'].includes(data.name)) {
       cookie.status = CookieStatus.INVALID;
     } else {
       // 记录红包类型
