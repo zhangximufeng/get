@@ -17,11 +17,9 @@ module.exports = async (req, res) => {
   try {
     data = await request.hongbao(sns);
   } catch (e) {
+    console.log(e.response);
     if (e.response) {
       data = e.response.data;
-      if ([400, 500].includes(e.response.status)) {
-        return response(4, 'cookie 不正确 或 网络繁忙');
-      }
     } else {
       logger.error(e.message);
     }
@@ -40,7 +38,7 @@ module.exports = async (req, res) => {
   // }
 
   if (!data.account) {
-    return response(3, 'cookie 不正确 或 未通过手机短信验证，请先绑定手机号再来');
+    return response(3, 'cookie 不正确 或 没有绑定手机号');
   }
 
   response(0, 'cookie 验证通过', {
