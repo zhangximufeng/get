@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
   }
 
   if (data.name) {
-    return response(1, `${data.name} ${data.message}`);
+    return response(1, `贡献失败，饿了么返回：${data.name} ${data.message}`);
   }
 
   // 如果要判断是否领满 5 次，则打开这个注释
