@@ -1,21 +1,21 @@
-const log4js = require('log4js');
+const log4js = require("log4js");
 
 log4js.configure({
   appenders: {
     console: {
-      type: 'console'
+      type: "console"
     },
     app: {
-      type: 'dateFile',
-      filename: 'log/app',
-      pattern: '-yyyy-MM-dd.log',
+      type: "dateFile",
+      filename: "log/app",
+      pattern: "-yyyy-MM-dd.log",
       alwaysIncludePattern: true
     }
   },
   categories: {
     default: {
-      appenders: ['console', 'app'],
-      level: 'trace'
+      appenders: ["console", "app"],
+      level: "trace"
     }
   },
   pm2: true,

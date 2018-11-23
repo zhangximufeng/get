@@ -5,8 +5,11 @@
     "dev": "nodemon src",
     "start": "pm2 start src --name get --instances 1",
     "reload": "pm2 reload get --update-env",
-    "precommit": "pretty-quick --staged"
+    "prettier": "pretty-quick --staged"
   },
+  "pre-commit": [
+    "prettier"
+  ],
   "dependencies": {
     "axios": "^0.17.1",
     "axios-https-proxy-fix": "^0.17.1",
@@ -21,6 +24,7 @@
   "devDependencies": {
     "husky": "^0.14.3",
     "nodemon": "^1.17.1",
+    "pre-commit": "^1.2.2",
     "prettier": "^1.12.1",
     "pretty-quick": "^1.4.1"
   }

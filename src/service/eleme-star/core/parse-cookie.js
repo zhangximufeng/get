@@ -1,4 +1,4 @@
-const Cookie = require('cookie');
+const Cookie = require("cookie");
 
 module.exports = cookie => {
   try {

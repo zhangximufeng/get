@@ -1,18 +1,18 @@
-const cookie2sns = require('./core/cookie2sns');
-const Request = require('./core/request');
-const logger = require('../../util/logger')('service/eleme');
-const checkCookieResponse = require('../check-cookie-response');
+const cookie2sns = require("./core/cookie2sns");
+const Request = require("./core/request");
+const logger = require("../../util/logger")("service/eleme");
+const checkCookieResponse = require("../check-cookie-response");
 
 module.exports = async (req, res) => {
-  const {cookie} = req.body;
+  const { cookie } = req.body;
   const response = checkCookieResponse(req, res);
 
   const sns = cookie2sns(cookie);
   if (!sns || !sns.openid || !sns.eleme_key || !sns.sid) {
-    return response(1, 'cookie 不正确，请按照教程一步一步获取');
+    return response(1, "cookie 不正确，请按照教程一步一步获取");
   }
 
-  const request = new Request({sn: '29e47b57971c1c9d'});
+  const request = new Request({ sn: "29e47b57971c1c9d" });
   let data;
   try {
     data = await request.hongbao(sns);
@@ -38,10 +38,10 @@ module.exports = async (req, res) => {
   // }
 
   if (!data.account) {
-    return response(3, 'cookie 不正确 或 没有绑定手机号');
+    return response(3, "cookie 不正确 或 没有绑定手机号");
   }
 
-  response(0, 'cookie 验证通过', {
+  response(0, "cookie 验证通过", {
     ...sns,
     phone: data.account
   });

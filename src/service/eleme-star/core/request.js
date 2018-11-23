@@ -1,12 +1,12 @@
-const querystring = require('querystring');
-const axios = require('axios-https-proxy-fix');
-const proxyServer = require('../../proxy-server');
-const logger = require('../../../util/logger')('service/eleme-star');
+const querystring = require("querystring");
+const axios = require("axios-https-proxy-fix");
+const proxyServer = require("../../proxy-server");
+const logger = require("../../../util/logger")("service/eleme-star");
 
-const origin = 'https://star.ele.me';
+const origin = "https://star.ele.me";
 
 module.exports = class Request {
-  constructor({caseid, sign}) {
+  constructor({ caseid, sign }) {
     this.caseid = caseid;
     this.sign = sign;
     this.http = axios.create({
@@ -15,8 +15,8 @@ module.exports = class Request {
       timeout: 3000,
       maxRedirects: 0,
       headers: {
-        'user-agent':
-          'Mozilla/5.0 (Linux; U; Android 2.3.6; zh-cn; GT-S5660 Build/GINGERBREAD) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1 MicroMessenger/4.5.255'
+        "user-agent":
+          "Mozilla/5.0 (Linux; U; Android 2.3.6; zh-cn; GT-S5660 Build/GINGERBREAD) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1 MicroMessenger/4.5.255"
       },
       transformRequest: [
         (data, headers) => {
@@ -30,7 +30,7 @@ module.exports = class Request {
   async getInfo(cookie) {
     let res;
     try {
-      const {data} = await this.http.get('/hongbao/wpshare', {
+      const { data } = await this.http.get("/hongbao/wpshare", {
         params: {
           caseid: this.caseid,
           sign: this.sign
@@ -51,14 +51,16 @@ module.exports = class Request {
         `);\n}catch(e){console.error(e)}}();`
       )
     );
-    const {result} = res;
-    if (!result || typeof result.share !== 'object') {
+    const { result } = res;
+    if (!result || typeof result.share !== "object") {
       return null;
     }
 
-    logger.info('饿了么星选 页面信息', res);
+    logger.info("饿了么星选 页面信息", res);
 
-    const luckyNumber = Number(this.getCenter(result.share.share_title, `【饿了么星选】第`, '个领取'));
+    const luckyNumber = Number(
+      this.getCenter(result.share.share_title, `【饿了么星选】第`, "个领取")
+    );
 
     // logger.info(result.share.share_title);
 
@@ -73,13 +75,13 @@ module.exports = class Request {
   }
 
   async getHongbao(cookie) {
-    const {data} = await this.http.post(
-      '/hongbao/wpshare',
+    const { data } = await this.http.post(
+      "/hongbao/wpshare",
       {
         caseid: this.caseid,
         sign: this.sign,
-        opt: 'get_shop_coupon',
-        display: 'json'
+        opt: "get_shop_coupon",
+        display: "json"
       },
       {
         headers: {
@@ -87,7 +89,7 @@ module.exports = class Request {
         }
       }
     );
-    logger.info('饿了么星选 领红包', data);
+    logger.info("饿了么星选 领红包", data);
     return data;
   }
 
@@ -97,7 +99,7 @@ module.exports = class Request {
       const rightIndex = source.indexOf(right, leftIndex);
       return source.substring(leftIndex, rightIndex);
     } catch (e) {
-      return '';
+      return "";
     }
   }
 };

@@ -1,16 +1,16 @@
-const logger = require('../util/logger')('response/check-cookie');
+const logger = require("../util/logger")("response/check-cookie");
 
 module.exports = (req, res) => (code, message, data) => {
   if (code === 0) {
     data = {
-      openid: data.openid || data.openId || '',
-      headimgurl: data.headimgurl || data.avatar || data.imgUrl || '',
-      nickname: data.nickname || '',
-      phone: data.phone || '',
+      openid: data.openid || data.openId || "",
+      headimgurl: data.headimgurl || data.avatar || data.imgUrl || "",
+      nickname: data.nickname || "",
+      phone: data.phone || "",
       service: data.service
     };
     Object.keys(data).forEach(key => {
-      if (typeof data[key] === 'string') {
+      if (typeof data[key] === "string") {
         data[key] = data[key].trim();
       }
     });

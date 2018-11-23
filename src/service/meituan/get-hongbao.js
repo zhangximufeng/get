@@ -1,41 +1,41 @@
-const Request = require('./core/request');
-const parseUrl = require('./core/parse-url');
-const logger = require('../../util/logger')('service/meituan');
-const Random = require('../../util/random');
-const timeout = require('../../util/timeout');
-const CookieStatus = require('../../constant/cookie-status');
-const getHongbaoResponse = require('../get-hongbao-response');
-const NO_MOBILE = '10000000000';
+const Request = require("./core/request");
+const parseUrl = require("./core/parse-url");
+const logger = require("../../util/logger")("service/meituan");
+const Random = require("../../util/random");
+const timeout = require("../../util/timeout");
+const CookieStatus = require("../../constant/cookie-status");
+const getHongbaoResponse = require("../get-hongbao-response");
+const NO_MOBILE = "10000000000";
 
 module.exports = async (req, res) => {
-  let {url, mobile, cookies, limit} = req.body;
+  let { url, mobile, cookies, limit } = req.body;
   const response = getHongbaoResponse(req, res);
   mobile = mobile || NO_MOBILE;
 
   if (!url || !mobile) {
-    return response(1, '请将信息填写完整');
+    return response(1, "请将信息填写完整");
   }
 
   if (!/^1\d{10}$/.test(mobile)) {
-    return response(2, '请填写 11 位手机号码');
+    return response(2, "请填写 11 位手机号码");
   }
 
   let params;
   try {
     params = parseUrl(url);
   } catch (e) {
-    return response(3, '美团红包链接不正确');
+    return response(3, "美团红包链接不正确");
   }
 
   const request = new Request();
   const data = await request.shareChannelRedirect(params);
   if (data === false) {
-    return response(3, '美团红包链接不正确');
+    return response(3, "美团红包链接不正确");
   }
 
   const lucky = ~~data.share_title.match(/第(.*?)个/).pop();
   if (lucky === 0) {
-    return response(12, '该红包已被领完 或 美团红包链接不正确');
+    return response(12, "该红包已被领完 或 美团红包链接不正确");
   }
 
   logger.info(`第 ${lucky} 个是手气最佳红包`);
@@ -46,14 +46,17 @@ module.exports = async (req, res) => {
 
   (async function lottery(userPhone2) {
     if (mobile === NO_MOBILE && number === 1) {
-      return response(99, '已领取到最佳前一个红包。下一个是最大红包，请手动打开红包链接领取');
+      return response(
+        99,
+        "已领取到最佳前一个红包。下一个是最大红包，请手动打开红包链接领取"
+      );
     }
 
     const gsc2 = await (async function grabShareCoupon() {
       const cookie = cookies[index++];
       if (!cookie) {
         // 传过来的 cookie 不够用
-        return response(4, '请求美团服务器失败，请重试');
+        return response(4, "请求美团服务器失败，请重试");
       }
 
       const gsc = await request.getShareCoupon({
@@ -68,11 +71,11 @@ module.exports = async (req, res) => {
       logger.info(gsc.code, gsc.msg);
 
       if ([4001, 4003].includes(gsc.code)) {
-        return response(5, '红包异常，请换一个红包链接再试');
+        return response(5, "红包异常，请换一个红包链接再试");
       }
 
       if (gsc.code === 4000) {
-        return response(12, '该红包链接已被他人抢完');
+        return response(12, "该红包链接已被他人抢完");
       }
 
       if ([1, 7003, 4002, 7006, 7001].includes(gsc.code)) {
@@ -91,7 +94,7 @@ module.exports = async (req, res) => {
             if (userPhone2 === mobile) {
               return response(
                 11,
-                '你的手机号之前领过小红包，无法领最大了。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
+                "你的手机号之前领过小红包，无法领最大了。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取"
               );
             }
             break;
@@ -102,7 +105,7 @@ module.exports = async (req, res) => {
             if (userPhone2 === mobile) {
               return response(
                 9,
-                '你的手机号（或代领最佳的小号）今日领取次数已达上限。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
+                "你的手机号（或代领最佳的小号）今日领取次数已达上限。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取"
               );
             }
             cookie.status = CookieStatus.LIMIT;
@@ -116,7 +119,7 @@ module.exports = async (req, res) => {
         return response(
           6,
           gsc.code === 4201
-            ? '你的手机号没有注册过美团。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取'
+            ? "你的手机号没有注册过美团。下一个是最大红包，别再点网站的领取按钮，请手动打开红包链接领取"
             : `美团返回错误（${gsc.code}）${gsc.msg}`
         );
       }
@@ -140,11 +143,11 @@ module.exports = async (req, res) => {
     if (number <= 0) {
       // const best = gsc2.data.wxCoupons.find(w => w.bestLuck) || {}
       const best = gsc2.data.wxCoupons[lucky - 1] || {};
-      logger.info('手气最佳红包已被领取', best);
-      return response(0, '手气最佳红包已被领取', {
-        nickname: best.nick_name || '未知',
+      logger.info("手气最佳红包已被领取", best);
+      return response(0, "手气最佳红包已被领取", {
+        nickname: best.nick_name || "未知",
         price: (best.coupon_price || 0) / 100,
-        date: best.dateStr || '未知',
+        date: best.dateStr || "未知",
         id: params.urlKey
       });
     }
@@ -152,7 +155,10 @@ module.exports = async (req, res) => {
     logger.info(`还有 ${number} 个是最佳红包`);
 
     if (limit - 1 < number - (mobile === NO_MOBILE ? 1 : 0)) {
-      return response(8, `您的剩余可消耗次数不足以领取此红包，还差 ${number} 个是最佳红包`);
+      return response(
+        8,
+        `您的剩余可消耗次数不足以领取此红包，还差 ${number} 个是最佳红包`
+      );
     }
 
     // 美团接口貌似有缓存，最后几次慢些请求，降低返回的数组长度错误概率

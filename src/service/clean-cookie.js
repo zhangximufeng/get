@@ -1,6 +1,6 @@
 module.exports = cookie => {
   cookie = String(cookie)
-    .replace(/\n/g, '')
+    .replace(/\n/g, "")
     .trim();
   if (
     (cookie[0] === '"' && cookie[cookie.length - 1] === '"') ||

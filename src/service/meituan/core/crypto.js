@@ -1,10 +1,10 @@
 /* eslint-disable */
 
-const CryptoJS = require('crypto-js');
+const CryptoJS = require("crypto-js");
 
-const t = '240789B06A4D4FAG',
-  n = '1513D520B9C1459C',
-  r = 'sxaa1k89dc';
+const t = "240789B06A4D4FAG",
+  n = "1513D520B9C1459C",
+  r = "sxaa1k89dc";
 
 function aesCrypto() {
   return {

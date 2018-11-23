@@ -1,12 +1,12 @@
-const axios = require('axios-https-proxy-fix');
-const querystring = require('querystring');
-const rohr = require('./rohr');
-const crypto = require('./crypto');
-const logger = require('../../../util/logger')('service/meituan');
-const cleanCookie = require('../../clean-cookie');
-const proxyServer = require('../../proxy-server');
+const axios = require("axios-https-proxy-fix");
+const querystring = require("querystring");
+const rohr = require("./rohr");
+const crypto = require("./crypto");
+const logger = require("../../../util/logger")("service/meituan");
+const cleanCookie = require("../../clean-cookie");
+const proxyServer = require("../../proxy-server");
 
-const origin = 'https://activity.waimai.meituan.com';
+const origin = "https://activity.waimai.meituan.com";
 
 module.exports = class Request {
   constructor() {
@@ -16,15 +16,15 @@ module.exports = class Request {
       headers: {
         origin,
         referer: origin,
-        'user-agent':
-          'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T MicroMessenger) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.23 Mobile Safari/537.36'
+        "user-agent":
+          "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T MicroMessenger) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.23 Mobile Safari/537.36"
       },
       transformRequest: [data => querystring.stringify(data)],
       proxy: proxyServer()
     });
   }
 
-  async getShareCoupon({phone, channelUrlKey, urlKey, url, dparam, cookie}) {
+  async getShareCoupon({ phone, channelUrlKey, urlKey, url, dparam, cookie }) {
     logger.info(`使用 ${phone} 尝试领取`);
     // 4201 需要验证码
     // 1006 该号码归属地暂不支持
@@ -41,15 +41,15 @@ module.exports = class Request {
     // 4003 没领到（什么鬼）
     try {
       return this.post(
-        '/coupon/grabShareCoupon',
+        "/coupon/grabShareCoupon",
         {
           userPhone: phone,
           channelUrlKey,
           urlKey,
           dparam,
           originUrl: url,
-          baseChannelUrlKey: '',
-          uuid: '',
+          baseChannelUrlKey: "",
+          uuid: "",
           platform: 11,
           partner: 162,
           riskLevel: 71
@@ -68,15 +68,18 @@ module.exports = class Request {
   }
 
   async shareChannelRedirect(params) {
-    const {data} = await this.post('/async/coupon/sharechannelredirect', params);
+    const { data } = await this.post(
+      "/async/coupon/sharechannelredirect",
+      params
+    );
     return data;
   }
 
   async post(url, params = {}, config = {}) {
     params._token = rohr.reload(`${url}?${querystring.stringify(params)}`);
-    const {data} = await this.http.post(url, params, config);
+    const { data } = await this.http.post(url, params, config);
     data.data = crypto.decrypto(data.data);
-    if (typeof data.data === 'string') {
+    if (typeof data.data === "string") {
       data.data = JSON.parse(data.data);
     }
     return data;
