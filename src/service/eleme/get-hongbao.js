@@ -64,6 +64,14 @@ module.exports = async (req, res) => {
       if (e.response) {
         data = e.response.data;
         if (
+          data &&
+          ["SNS_UID_CHECK_FAILED", "PHONE_IS_EMPTY", "UNAUTHORIZED"].includes(
+            data.name
+          )
+        ) {
+          cookie.status = CookieStatus.INVALID;
+        }
+        if (
           [400, 401, 500].includes(e.response.status) &&
           index < cookies.length - 1
         ) {
