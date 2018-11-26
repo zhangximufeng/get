@@ -88,83 +88,86 @@ module.exports = async (req, res) => {
       return lottery();
     }
 
-    // 库里面 cookie 无效
-    if (
-      ["SNS_UID_CHECK_FAILED", "PHONE_IS_EMPTY", "UNAUTHORIZED"].includes(
-        data.name
-      )
-    ) {
-      cookie.status = CookieStatus.INVALID;
-    } else {
-      // 记录红包类型
-      if (type === undefined && data.promotion_items.length > 0) {
-        const typeName = data.promotion_items[0].name;
-        if (typeName === "拼手气红包") {
-          type = 0;
-        } else if (typeName === "品质联盟专享红包") {
-          type = 1;
-        }
+    // 有错误
+    if (data.name) {
+      if (
+        ["SNS_UID_CHECK_FAILED", "PHONE_IS_EMPTY", "UNAUTHORIZED"].includes(
+          data.name
+        )
+      ) {
+        cookie.status = CookieStatus.INVALID;
       }
+      return lottery();
+    }
 
-      switch (data.ret_code) {
-        case 1:
-          // 红包被抢完了
-          break;
-        case 2:
-          // 这个号 抢过这个红包
-          cookie.status = CookieStatus.USED;
-          break;
-        case 3:
-        case 4:
-          // 领取成功
-          cookie.status = CookieStatus.SUCCESS;
-          break;
-        case 5:
-          // 没次数了，有可能是手机号没次数了，也有可能是 cookie 没次了
-          // 如果是自己的号领的，没次了，直接提示
-          cookie.status = CookieStatus.LIMIT;
-          break;
+    // 记录红包类型
+    if (type === undefined && data.promotion_items.length > 0) {
+      const typeName = data.promotion_items[0].name;
+      if (typeName === "拼手气红包") {
+        type = 0;
+      } else if (typeName === "品质联盟专享红包") {
+        type = 1;
       }
+    }
 
-      // 计算剩余第几个为最佳红包
-      number = query.lucky_number - data.promotion_records.length;
+    switch (data.ret_code) {
+      case 1:
+        // 红包被抢完了
+        break;
+      case 2:
+        // 这个号 抢过这个红包
+        cookie.status = CookieStatus.USED;
+        break;
+      case 3:
+      case 4:
+        // 领取成功
+        cookie.status = CookieStatus.SUCCESS;
+        break;
+      case 5:
+        // 没次数了，有可能是手机号没次数了，也有可能是 cookie 没次了
+        // 如果是自己的号领的，没次了，直接提示
+        cookie.status = CookieStatus.LIMIT;
+        break;
+    }
 
-      // 领完了可能不会返回 records，所以 === 0
-      if (data.promotion_records.length === 0 || number <= 0) {
-        const lucky = data.promotion_records[query.lucky_number - 1];
-        logger.info("手气最佳红包已被领取", lucky);
+    // 计算剩余第几个为最佳红包
+    number = query.lucky_number - data.promotion_records.length;
 
-        // 还是取不到，可能是因为领完了，不会返回数组了
-        if (!lucky) {
-          return response(0, "手气最佳红包已被领取", {
-            nickname: "未知",
-            price: 0,
-            date: "未知",
-            id: query.sn,
-            type
-          });
-        }
-        lucky.type = type;
-        return lucky;
+    // 领完了 或 超过最大包的个数
+    if (data.ret_code === 1 || number <= 0) {
+      const lucky = data.promotion_records[query.lucky_number - 1];
+      logger.info("手气最佳红包已被领取", lucky);
+
+      // 还是取不到，可能是因为领完了，不会返回数组了
+      if (!lucky) {
+        return response(0, "手气最佳红包已被领取", {
+          nickname: "未知",
+          price: 0,
+          date: "未知",
+          id: query.sn,
+          type
+        });
       }
+      lucky.type = type;
+      return lucky;
+    }
 
-      logger.info(`还要领 ${number} 个红包才是手气最佳`);
+    logger.info(`还要领 ${number} 个红包才是手气最佳`);
 
-      if (number === 1) {
-        return response(
-          99,
-          "已领取到最佳前一个红包。下一个是最大红包，请手动打开红包链接领取",
-          { type }
-        );
-      }
+    if (number === 1) {
+      return response(
+        99,
+        "已领取到最佳前一个红包。下一个是最大红包，请手动打开红包链接领取",
+        { type }
+      );
+    }
 
-      if (limit < number) {
-        return response(
-          8,
-          `您的剩余可消耗次数不足以领取此红包，还差 ${number} 个是最佳红包`,
-          { type }
-        );
-      }
+    if (limit < number) {
+      return response(
+        8,
+        `您的剩余可消耗次数不足以领取此红包，还差 ${number} 个是最佳红包`,
+        { type }
+      );
     }
 
     return lottery();
