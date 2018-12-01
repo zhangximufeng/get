@@ -2,6 +2,8 @@
 
 [![GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 
+【注意】由于领取逻辑容易被饿了么、美团针对性更新，故 mtdhb 线上与本仓库不再同步
+
 红包核心领取逻辑，需配合 [mtdhb/api](https://github.com/mtdhb/api) 使用
 
 基于 [mtdhb/old](https://github.com/mtdhb/old) 改造，代码比较乱，自行研究和部署吧
